@@ -1,1 +1,3 @@
-# barla_boyz
+# barla_boyz group project
+#### Lorenzo Brizzi 4865720
+#### Daniele Scala 
