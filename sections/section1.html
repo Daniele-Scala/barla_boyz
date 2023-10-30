@@ -13,10 +13,10 @@
 <body class="bg-light d-flex flex-column min-vh-100">
   <nav class="navbar navbar-expand-lg navbar-light bg-success">
       <div class="container">
-          <a class="navbar-brand" href="#">
-              <img src="../Photo/logo.jpg" alt="Logo" height="60"> <!-- Ingrandito il logo -->
-              <a class="nav-link" href="../"><strong>Barla Boyz</strong></a> <!-- Testo in rilievo -->
-          </a>
+        <a class="navbar-brand" href="../index.html">
+          <img src="../Photo/logo.jpg" alt="Logo" height="60"> <!-- Ingrandito il logo -->
+          <strong>Barla Boyz</strong> <!-- Testo in rilievo -->
+        </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
           </button>
@@ -105,9 +105,6 @@
           chart.append("g")
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom(x))
-            .selectAll("text")
-            .attr("transform", "translate(-10,0)rotate(-45)")
-            .style("text-anchor", "end");
     
           chart.append("g")
             .call(d3.axisLeft(y));
