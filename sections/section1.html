@@ -33,7 +33,7 @@
       </div>
   </nav>
 
-  <div class="container text-center flex-grow-2 my-5"> <!-- Aggiunto "flex-grow-1" per far crescere il div e "my-5" per aggiungere spazio sopra e sotto -->
+  <div class="container text-center flex-grow-1 my-5"> <!-- Aggiunto "flex-grow-1" per far crescere il div e "my-5" per aggiungere spazio sopra e sotto -->
       <div class="row">
           <h2>Grafico a Barre per il Numero di Alberi</h2>
           <select id="city-selector">
@@ -80,7 +80,7 @@
         var svg = d3.select("#bar-chart");
         svg.selectAll("*").remove(); // Clear the previous content
   
-        var margin = { top: 20, right: 20, bottom: 30, left: 60 };
+        var margin = { top: 20, right: 20, bottom: 30, left: 100 };
         var width = 800 - margin.left - margin.right;
         var height = 400 - margin.top - margin.bottom;
   
@@ -157,10 +157,9 @@
     });
   </script>
       
+</body>
 
-  <footer class="bg-dark text-light text-center p-2">
+<footer class="bg-dark text-light text-center p-2">
     <p>&copy; 2023 Barla Boyz. Tutti i diritti riservati. <a href="privacy.html" class="text-light">Informativa sulla privacy</a></p>
   </footer>
-    
-</body>
 </html>
