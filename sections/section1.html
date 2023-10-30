@@ -56,6 +56,12 @@
         .attr("value", (d) => d)
         .text((d) => d);
   
+      var tooltip = d3
+        .select("body")
+        .append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+  
       function updateBarChart(city) {
         var filteredData = data.filter((d) => d.city === city);
         var treeCounts = {};
@@ -98,7 +104,17 @@
           .attr("y", (d) => y(d[0]))
           .attr("width", 0) // Initialize bar width to 0
           .attr("height", y.bandwidth())
-          .attr("fill", "green"); // Set the bar color to green
+          .attr("fill", "green") // Set the bar color to green
+          .on("mouseover", function (d) {
+            tooltip.transition().duration(200).style("opacity", 0.9);
+            tooltip
+              .html(d[0] + ": " + d[1])
+              .style("left", d3.event.pageX + "px")
+              .style("top", d3.event.pageY - 28 + "px");
+          })
+          .on("mouseout", function (d) {
+            tooltip.transition().duration(500).style("opacity", 0);
+          });
   
         chart.append("g")
           .call(d3.axisLeft(y));
@@ -122,7 +138,7 @@
       });
     });
   </script>
-  
+    
 
   <footer class="bg-dark text-light text-center p-2">
     <p>&copy; 2023 Barla Boyz. Tutti i diritti riservati. <a href="privacy.html" class="text-light">Informativa sulla privacy</a></p>
