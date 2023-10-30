@@ -77,7 +77,7 @@
         var svg = d3.select("#bar-chart");
         svg.selectAll("*").remove(); // Clear the previous content
   
-        var margin = { top: 20, right: 20, bottom: 30, left: 40 };
+        var margin = { top: 20, right: 20, bottom: 30, left: 60 }; // Increased left margin for text
         var width = 800 - margin.left - margin.right;
         var height = 400 - margin.top - margin.bottom;
   
@@ -99,12 +99,9 @@
         chart.selectAll(".bar")
           .data(Object.entries(treeCounts))
           .enter()
-          .append("rect")
+          .append("g") // Create a group for each bar
           .attr("class", "bar")
-          .attr("y", (d) => y(d[0]))
-          .attr("width", 0) // Initialize bar width to 0
-          .attr("height", y.bandwidth())
-          .attr("fill", "green") // Set the bar color to green
+          .attr("transform", (d) => "translate(0," + y(d[0]) + ")")
           .on("mouseover", function (d) {
             tooltip.transition().duration(200).style("opacity", 0.9);
             tooltip
@@ -116,6 +113,21 @@
             tooltip.transition().duration(500).style("opacity", 0);
           });
   
+        chart.selectAll(".bar") // Add the rect element to each group
+          .append("rect")
+          .attr("width", 0) // Initialize bar width to 0
+          .attr("height", y.bandwidth())
+          .attr("fill", "green"); // Set the bar color to green
+  
+        // Add text labels next to the bars
+        chart.selectAll(".bar")
+          .append("text")
+          .text((d) => d[1])
+          .attr("x", (d) => x(d[1]) + 10) // Adjust the x-position for text
+          .attr("y", y.bandwidth() / 2)
+          .attr("dy", "0.35em")
+          .attr("fill", "black");
+  
         chart.append("g")
           .call(d3.axisLeft(y));
   
@@ -124,7 +136,7 @@
           .call(d3.axisBottom(x));
   
         // Animation: Transition the bars
-        chart.selectAll(".bar")
+        chart.selectAll("rect")
           .transition()
           .duration(1000) // Transition duration in milliseconds
           .attr("width", (d) => x(d[1]));
