@@ -61,7 +61,13 @@
         .append("div")
         .attr("class", "tooltip")
         .style("opacity", 0);
-  
+      
+      function getAverageHeight(scientificName) {
+        // Assuming 'data' is your loaded JSON data
+        const treeSpecies = data.find((d) => d.scientific_name === scientificName);
+        return treeSpecies ? treeSpecies.avg_height : 'N/A';
+      }
+
       function updateBarChart(city) {
         var filteredData = data.filter((d) => d.city === city);
         var treeCounts = {};
@@ -118,7 +124,7 @@
             tooltip.transition().duration(200).style("opacity", 0.9);
 
            // Customize the tooltip content
-           tooltip.html(`Scientific name: ${d[0]}<br>Count: ${d[1]}<br>Avg height: ${d.avg_height}m`)
+           tooltip.html(`Scientific name: ${d[0]}<br>Count: ${d[1]}<br>Average Height: ${getAverageHeight(d[0])} meters`)
                   .style("left",(d3.event.pageX + 40) + "px")
                   .style("top", (d3.event.pageY - 40) + "px");
 
