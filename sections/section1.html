@@ -129,6 +129,7 @@
               .style("top", d3.event.pageY - 28 + "px");*/
           })
           .on("mouseout", function (d) {
+            d3.select(this).style("fill", "green");
             d3.select(this)
               .transition()
               .duration(200)
