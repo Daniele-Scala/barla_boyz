@@ -118,7 +118,7 @@
             tooltip.transition().duration(200).style("opacity", 0.9);
 
            // Customize the tooltip content
-           tooltip.html(`Common name: ${d[0]}<br>Count: ${d[1]}`)
+           tooltip.html(`Scientific name: ${d[0]}<br>Count: ${d[1]}<br>Avg height: ${d.avg_height}m`)
                   .style("left",(d3.event.pageX + 40) + "px")
                   .style("top", (d3.event.pageY - 40) + "px");
 
