@@ -170,117 +170,110 @@
 
 <script>
   d3.json("../Data/dataset1.json").then(function (data) {
-      // Create the state selector dropdown
-      var stateSelector = d3.select("#state-selector");
-      var states = [...new Set(data.map((d) => d.state))];
+    // Create the state selector dropdown
+    var stateSelector = d3.select("#state-selector");
+    var states = [...new Set(data.map((d) => d.state))];
 
-      stateSelector
-          .selectAll("option")
-          .data(states)
-          .enter()
-          .append("option")
-          .attr("value", (d) => d)
-          .text((d) => d);
+    stateSelector
+        .selectAll("option")
+        .data(states)
+        .enter()
+        .append("option")
+        .attr("value", (d) => d)
+        .text((d) => d);
+    function updateStackedBarChart(state) {
+      var filteredData = data.filter((d) => d.state === state);
 
-      // Create the stacked bar chart for the selected state and cities
-      function updateStackedBarChart(state) {
-          var filteredData = data.filter((d) => d.state === state);
+      var svg = d3.select("#stacked-bar-chart");
+      svg.selectAll("*").remove();
 
-          // Limit the number of cities to 5
-          var cities = [...new Set(filteredData.map((d) => d.city))].slice(0, 5);
+      // Define the dimensions and scales for the chart
+      var margin = { top: 20, right: 20, bottom: 30, left: 100 };
+      var width = 800 - margin.left - margin.right;
+      var height = 400 - margin.top - margin.bottom;
 
-          var svg = d3.select("#stacked-bar-chart");
-          svg.selectAll("*").remove();
+      // Group the data by city and scientific_name, and sum the counts
+      var groupedData = d3.nest()
+        .key((d) => d.city)
+        .key((d) => d.scientific_name)
+        .rollup((v) => d3.sum(v, (d) => d.count))
+        .entries(filteredData);
 
-          // Define the dimensions and scales for the chart
-          var margin = { top: 20, right: 20, bottom: 30, left: 40 };
-          var width = 800 - margin.left - margin.right;
-          var height = 400 - margin.top - margin.bottom;
+      // Sort the cities by the total count of trees
+      var sortedCities = groupedData
+        .sort((a, b) => d3.sum(b.values, (d) => d.value) - d3.sum(a.values, (d) => d.value))
+        .slice(0, 5); // Select the top 5 cities
 
-          var x = d3.scaleBand()
-              .range([0, width])
-              .padding(0.1)
-              .domain(cities);
-
-          var y = d3.scaleLinear()
-              .range([height, 0])
-              .domain([0, d3.max(filteredData, (d) => d.count)]);
-
-          // Create the stacked bar chart
-          var chart = svg.append("svg")
-              .attr("width", width + margin.left + margin.right)
-              .attr("height", height + margin.top + margin.bottom)
-              .append("g")
-              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-          var color = d3.scaleOrdinal(d3.schemeCategory10);
-
-          var topTreeTypes = [];
-
-          cities.forEach(function (city) {
-              var cityData = filteredData.filter((d) => d.city === city);
-              var treeCounts = {};
-
-              cityData.forEach(function (d) {
-                  if (treeCounts[d.scientific_name]) {
-                      treeCounts[d.scientific_name] += d.count;
-                  } else {
-                      treeCounts[d.scientific_name] = d.count;
-                  }
-              });
-
-              var sortedCounts = Object.entries(treeCounts)
-                  .sort((a, b) => b[1] - a[1]);
-
-              topTreeTypes.push({
-                  city: city,
-                  data: sortedCounts.slice(0, 5)
-              });
-          });
-
-          // Stack the data
-          var stack = d3.stack()
-              .keys(topTreeTypes[0].data.map((d) => d[0]))
-              .order(d3.stackOrderNone)
-              .offset(d3.stackOffsetNone);
-
-          var stackedData = stack(topTreeTypes.map((d) => d.data));
-
-          // Create the stacked bars
-          chart.selectAll("g")
-              .data(stackedData)
-              .enter()
-              .append("g")
-              .attr("fill", (d) => color(d.key))
-              .selectAll("rect")
-              .data((d) => d)
-              .enter()
-              .append("rect")
-              .attr("x", (d, i) => x(topTreeTypes[i].city))
-              .attr("y", (d) => y(d[1]))
-              .attr("height", (d) => y(d[0]) - y(d[1]))
-              .attr("width", x.bandwidth());
-
-          // Add x-axis
-          chart.append("g")
-              .attr("class", "x-axis")
-              .attr("transform", "translate(0," + height + ")")
-              .call(d3.axisBottom(x));
-
-          // Add y-axis
-          chart.append("g")
-              .attr("class", "y-axis")
-              .call(d3.axisLeft(y));
-      }
-
-      // Initialize the chart with the first state
-      updateStackedBarChart(states[0]);
-
-      // Listen for changes in the selected state
-      stateSelector.on("change", function () {
-          var selectedState = this.value;
-          updateStackedBarChart(selectedState);
+      // Extract the top 5 tree types for each city
+      var topTreeTypes = sortedCities.map((cityData) => {
+        return {
+          city: cityData.key,
+          data: cityData.values
+            .sort((a, b) => b.value - a.value)
+            .slice(0, 5) // Select the top 5 tree types for each city
+        };
       });
+
+      // Create the horizontal stacked bar chart
+      var x = d3.scaleLinear()
+        .range([0, width])
+        .domain([0, d3.max(topTreeTypes, (d) => d3.max(d.data, (t) => t.value))]);
+
+      var y = d3.scaleBand()
+        .range([0, height])
+        .padding(0.1)
+        .domain(topTreeTypes.map((d) => d.city));
+
+      var chart = svg.append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+      var stack = d3.stack()
+        .keys(topTreeTypes[0].data.map((d) => d.key))
+        .order(d3.stackOrderNone)
+        .offset(d3.stackOffsetNone);
+
+      var stackedData = stack(topTreeTypes.map((d) => d.data));
+
+      chart.selectAll("g")
+        .data(stackedData)
+        .enter()
+        .append("g")
+        .attr("fill", (d) => color(d.key))
+        .selectAll("rect")
+        .data((d) => d)
+        .enter()
+        .append("rect")
+        .attr("x", 0)
+        .attr("y", (d) => y(d.data.city))
+        .attr("width", (d) => x(d[1]) - x(d[0]))
+        .attr("height", y.bandwidth());
+
+      // Add y-axis
+      chart.append("g")
+        .attr("class", "y-axis")
+        .call(d3.axisLeft(y));
+
+      // Add x-axis
+      chart.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+    }
+
+
+    // Initialize the chart with the first state
+    updateStackedBarChart(states[0]);
+
+    // Listen for changes in the selected state
+    stateSelector.on("change", function () {
+        var selectedState = this.value;
+        updateStackedBarChart(selectedState);
+    });
   });
 </script>
 
