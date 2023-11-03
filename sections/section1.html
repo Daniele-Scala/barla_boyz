@@ -168,10 +168,14 @@
   </script>
 
   <script>
+    d3.json("../Data/dataset1.json").then(function (data) {
+    var citySelector = d3.select("#stacked-bar-chart");
+    
     function updateStackedBarChart(data) {
     // Filter and process data to get the top 10 cities with the most trees
     data = data.filter((d) => d.city !== null && d.scientific_name !== null && d.count !== null);
     const cities = [...new Set(data.map((d) => d.city))];
+
     const topCities = cities
       .map((city) => ({
         city,
@@ -250,7 +254,7 @@
       .duration(1000)
       .attr("width", (d) => x(d.count));
   }
-
+});
 </script>
 
 
