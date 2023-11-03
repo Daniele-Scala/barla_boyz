@@ -14,8 +14,8 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-success">
       <div class="container">
         <a class="navbar-brand" href="../index.html">
-          <img src="../Photo/logo.jpg" alt="Logo" height="60"> <!-- Ingrandito il logo -->
-          <strong>Barla Boyz</strong> <!-- Testo in rilievo -->
+          <img src="../Photo/logo.jpg" alt="Logo" height="80">
+          <strong>Barla Boyz</strong>
         </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
@@ -23,23 +23,25 @@
           <div class="collapse navbar-collapse" id="navbarNav">
               <ul class="navbar-nav ml-auto">
                   <li class="nav-item">
-                      <a class="nav-link" href="section1.html"><strong>Section 1</strong></a> <!-- Testo in rilievo -->
+                      <a class="nav-link" href="section1.html"><strong>Section 1</strong></a>
                   </li>
                   <li class="nav-item">
-                      <a class="nav-link" href="section2.html"><strong>Section 2</strong></a> <!-- Testo in rilievo -->
+                      <a class="nav-link" href="section2.html"><strong>Section 2</strong></a>
                   </li>
               </ul>
           </div>
       </div>
   </nav>
 
-  <div class="container text-center flex-grow-1 my-5"> <!-- Aggiunto "flex-grow-1" per far crescere il div e "my-5" per aggiungere spazio sopra e sotto -->
+  <div class="container text-center flex-grow-1 my-5">
       <div class="row">
-          <h2>Grafico a Barre per il Numero di Alberi</h2>
+          <h2>Number of trees, divided by type, for each city in the United States</h2>
           <select id="city-selector">
               <label for="dataset-dropdown"  style="margin-left: 10px;">Select City:</label>
           </select>
-          <div id="bar-chart"></div>          
+          <div id="bar-chart"></div>  
+          <br>
+          <h2>Population of each type of tree for each state</h2>
           <select id="state-selector"></select>
           <div id="stacked-bar-chart"></div>
       </div>
