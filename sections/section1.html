@@ -170,11 +170,11 @@
     d3.json("../Data/dataset1.json").then(function (data) {
       // Create the city selector dropdown
       var citySelector = d3.select("#city-selector");
-      var city = [...new Set(data.map((d) => d.city))];
+      var cities = [...new Set(data.map((d) => d.city))];
 
       citySelector
           .selectAll("option")
-          .data(city)
+          .data(cities)
           .enter()
           .append("option")
           .attr("value", (d) => d)
@@ -248,7 +248,7 @@
       }
 
       // Initialize the chart with the first state
-      v_barchart(city[0]);
+      v_barchart(cities[0]);
 
       // Listen for changes in the selected state
       stateSelector.on("change", function () {
