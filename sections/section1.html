@@ -183,6 +183,7 @@
           .append("option")
           .attr("value", (d) => d)
           .text((d) => d);
+
       function updateStackedBarChart(state) {
         var filteredData = data.filter((d) => d.state === state);
 
@@ -218,18 +219,10 @@
 
         console.log(topTreeTypes);
 
-        // Calculate the maximum count for each city
-        var maxCountsByCity = {};
-        filteredData.forEach(function (d) {
-          if (!maxCountsByCity[d.city] || d.count > maxCountsByCity[d.city]) {
-            maxCountsByCity[d.city] = d.count;
-          }
-        });
-
         // Set the domain for the x scale based on the maximum counts
         var x = d3.scaleLinear()
           .range([0, width])
-          .domain([0, d3.max(Object.values(maxCountsByCity))]);
+          .domain([0, d3.max(topTreeTypes, (d) => d3.sum(d.data, (t) => t.value))]);
 
         var y = d3.scaleBand()
           .range([0, height])
@@ -262,7 +255,7 @@
           .data((d) => d)
           .enter()
           .append("rect")
-          .attr("x", 0)
+          .attr("x",  (d) => x(d[0]))
           .attr("y", (d) => y(d.data.city))
           .attr("width", (d) => x(d[1]) - x(d[0]))
           .attr("height", y.bandwidth());
