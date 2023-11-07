@@ -275,7 +275,6 @@
     });
   });*/
 </script>
-
 <script>
   d3.json("../Data/dataset1.json").then(function (data) {
     // Create the state selector dropdown
@@ -283,29 +282,45 @@
     var states = [...new Set(data.map((d) => d.state))];
 
     stateSelector
-        .selectAll("option")
-        .data(states)
-        .enter()
-        .append("option")
-        .attr("value", (d) => d)
-        .text((d) => d);
+      .selectAll("option")
+      .data(states)
+      .enter()
+      .append("option")
+      .attr("value", (d) => d)
+      .text((d) => d);
 
     function updateStackedBarChart(state) {
       var filteredData = data.filter((d) => d.state === state);
-      //var svg = d3.select("#stacked-bar-chart");
-      //svg.selectAll("*").remove();
 
-      var data = [
-      {month: new Date(2018, 1, 1), apples: 400, bananas: 200, cherries: 96, dates: 40},
-      {month: new Date(2018, 2, 1), apples: 160, bananas: 150, cherries: 96, dates: 40},
-      {month: new Date(2018, 3, 1), apples:  64, bananas:  96, cherries: 64, dates: 40},
-      {month: new Date(2018, 4, 1), apples:  32, bananas:  48, cherries: 64, dates: 40}
-      ];
+      var svg = d3.select("#stacked-bar-chart");
+      svg.selectAll("*").remove();
 
-      var stack = d3.stack()
-      .keys(["apples", "bananas", "cherries", "dates"]);
+      // Define the dimensions and scales for the chart
+      var margin = { top: 20, right: 20, bottom: 30, left: 100 };
+      var width = 800 - margin.left - margin.right;
+      var height = 400 - margin.top - margin.bottom;
 
-      var stackedSeries = stack(data);
+      // Group the data by city and scientific_name, and sum the counts
+      var groupedData = d3.nest()
+        .key((d) => d.city)
+        .key((d) => d.scientific_name)
+        .rollup((v) => d3.sum(v, (d) => d.count))
+        .entries(filteredData);
+
+      // Sort the cities by the total count of trees
+      var sortedCities = groupedData
+        .sort((a, b) => d3.sum(b.values, (d) => d.value) - d3.sum(a.values, (d) => d.value))
+        .slice(0, 5); // Select the top 5 cities
+
+      // Extract the top 5 tree types for each city
+      var topTreeTypes = sortedCities.map((cityData) => {
+        return {
+          city: cityData.key,
+          data: cityData.values
+            .sort((a, b) => b.value - a.value)
+            .slice(0, 5) // Select the top 5 tree types for each city
+        };
+      });
 
       // Create the horizontal stacked bar chart
       var x = d3.scaleLinear()
@@ -325,35 +340,52 @@
 
       var color = d3.scaleOrdinal(d3.schemeCategory10);
 
-      // Create a g element for each series
-      var svg = d3.select("#stacked-bar-chart")
-        .select('g')
-        .selectAll('g.series')
-        .data(stackedSeries)
-        .join('g')
-        .classed('series', true)
-        .style('fill', (d) => colorScale(d.key));
-      
-      // For each series create a rect element for each month
-      sel.selectAll('rect')
+      var stack = d3.stack()
+        .keys(topTreeTypes[0].data.map((d) => d.key))
+        .order(d3.stackOrderNone)
+        .offset(d3.stackOffsetNone);
+
+      var stackedData = stack(topTreeTypes.map((d) => d.data));
+
+      chart.selectAll("g")
+        .data(stackedData)
+        .enter()
+        .append("g")
+        .attr("fill", (d) => color(d.key))
+        .selectAll("rect")
         .data((d) => d)
-        .join('rect')
-        .attr('width', 40)
-        .attr('y', (d) => yScale(d[1]))
-        .attr('x', (d) => xScale(d.data.month) - 20)
-        .attr('height', (d) => yScale(d[0]) -  yScale(d[1]));
+        .enter()
+        .append("rect")
+        .attr("x", (d) => x(d[0]))
+        .attr("y", (d) => y(d.data.city))
+        .attr("width", (d) => x(d[1]) - x(d[0]))
+        .attr("height", y.bandwidth());
+
+      // Add y-axis
+      chart.append("g")
+        .attr("class", "y-axis")
+        .call(d3.axisLeft(y));
+
+      // Add x-axis
+      chart.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
     }
-    
+
     // Initialize the chart with the first state
     updateStackedBarChart(states[0]);
 
     // Listen for changes in the selected state
     stateSelector.on("change", function () {
-        var selectedState = this.value;
-        updateStackedBarChart(selectedState);
+      var selectedState = this.value;
+      updateStackedBarChart(selectedState);
     });
+  });
+</script>
 
-  });    
+<script>
+    
 </script>
       
 </body>
