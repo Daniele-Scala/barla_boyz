@@ -245,7 +245,7 @@
           .order(d3.stackOrderNone)
           .offset(d3.stackOffsetNone);
 
-        var stackedData = stack(topTreeTypes.map((city) => city.data));
+        var stackedData = stack(TreeTypes.map((city) => city.data));
 
         console.log(stackedData);
 
