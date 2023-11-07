@@ -180,14 +180,8 @@
           .attr("value", (d) => d)
           .text((d) => d);
 
-      function v_barchart(city, data) {
+      function v_barchart(cityData, data) {
         // Filter data by the selected city
-        const cityData = data.get(city);
-
-        if (!cityData) {
-          console.log("City not found in data.");
-          return;
-        }
 
         const speciesNames = Array.from(cityData.keys());
 
@@ -247,18 +241,15 @@
           .call(d3.axisBottom(x));
       }
 
-      // Initialize the chart with the first state
+      // Initialize the chart with the first city
       v_barchart(cities[0]);
 
-      // Listen for changes in the selected state
-      stateSelector.on("change", function () {
-          var selectedState = this.value;
-          updateStackedBarChart(selectedState);
+      citySelector.on("change", function () {
+        var selectedCity = this.value;
+        v_barchart(selectedCity);
       });
     });
   </script>
-
-
 
 </body>
 
