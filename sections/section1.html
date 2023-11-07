@@ -207,7 +207,8 @@
                 
                 // Extract the top 5 tree types for each city
                 var topTreeTypes = sortedCities.map((d) => d.values)
-                    .map((d) => d.sort((a, b) => b.value - a.value).slice(0, 5))
+                    .map((d) => d.sort((a, b) => b.value - a.value)
+                    .slice(0, 5))
                     .flat();
 
                 // Extract the unique tree types
@@ -235,21 +236,29 @@
                     .range([height, 0])
                     .domain([0, d3.max(sortedCities, (d) => d3.sum(d.values, (d) => d.value))]);
 
-                // Create the x and y axes
+                // Create the axes
                 chart.append("g")
                     .attr("transform", "translate(0," + height + ")")
                     .call(d3.axisBottom(x));
 
                 chart.append("g")
-                    .call(d3.axisLeft(y));
+                    .call(d3.axisLeft(y))
+                    .attr("class", "y-axis");
+
+                var stack = d3.stack()
+                    .keys(treeTypes)
+                    .order(d3.stackOrderNone)
+                    .offset(d3.stackOffsetNone);
+
+                var layers = stack(topTreeTypes);
 
                 // Create the stacked bars
                 chart.append("g")
                     .selectAll("g")
-                    .data(d3.stack().keys(treeTypes)(topTreeTypes))
+                    .data(layers)
                     .enter()
                     .append("g")
-                    .attr("fill", (d) => colorScale(d.key))
+                    .attr("fill", (d) => color(d.key))
                     .selectAll("rect")
                     .data((d) => d)
                     .enter()
@@ -265,6 +274,13 @@
                         d3.select(this).style("fill", colorScale(d.key));
                     });
                 }
+
+                updateStackedBarChart(states[0]);
+
+                stateSelector.on("change", function () {
+                    var selectedState = this.value;
+                    updateStackedBarChart(selectedState);
+                });
                 
         });
     </script>
