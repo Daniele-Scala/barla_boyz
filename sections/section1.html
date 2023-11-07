@@ -169,7 +169,7 @@
   <script>
     d3.json("../Data/dataset1.json").then(function (data) {
       // Create the city selector dropdown
-      var cityselector = d3.select("#city-selector");
+      var citySelector = d3.select("#city-selector");
       var city = [...new Set(data.map((d) => d.city))];
 
       citySelector
