@@ -130,22 +130,22 @@
 
             // Aggiungi etichette delle città e dei tipi di alberi
             svg.selectAll("text.city-label")
-                .data(topCities)
-                .enter()
-                .append("text")
-                .attr("class", "city-label")
-                .attr("x", -20)
-                .attr("y", (d, i) => i * cellSize + cellSize / 2)
-                .text(d => d);
+            .data(topCities)
+            .enter()
+            .append("text")
+            .attr("class", "city-label")
+            .attr("x", -40) 
+            .attr("y", (d, i) => i * cellSize + cellSize / 2)
+            .text(d => d);
 
             svg.selectAll("text.tree-type-label")
-                .data(topTreeTypes)
-                .enter()
-                .append("text")
-                .attr("class", "tree-type-label")
-                .attr("x", (d, i) => i * cellSize + cellSize / 2)
-                .attr("y", height + 20)
-                .text(d => d);
+            .data(topTreeTypes)
+            .enter()
+            .append("text")
+            .attr("class", "tree-type-label")
+            .attr("x", (d, i) => i * cellSize + cellSize / 2)
+            .attr("y", height + 40) 
+            .text(d => d);
         });
     </script>
 
