@@ -237,7 +237,7 @@
         var color = d3.scaleOrdinal(d3.schemeCategory10);
 
         var stack = d3.stack()
-          //.keys(topTreeTypes[0].data.map((d) => d.key))
+          .keys(topTreeTypes[0].data.map((d) => d.key))
           .order(d3.stackOrderNone)
           .offset(d3.stackOffsetNone);
 
