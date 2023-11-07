@@ -218,10 +218,18 @@
 
         console.log(topTreeTypes);
 
-        // Create the horizontal stacked bar chart
+        // Calculate the maximum count for each city
+        var maxCountsByCity = {};
+        filteredData.forEach(function (d) {
+          if (!maxCountsByCity[d.city] || d.count > maxCountsByCity[d.city]) {
+            maxCountsByCity[d.city] = d.count;
+          }
+        });
+
+        // Set the domain for the x scale based on the maximum counts
         var x = d3.scaleLinear()
           .range([0, width])
-          .domain([0, d3.max(topTreeTypes, (d) => d3.max(d.data, (t) => t.value))]);
+          .domain([0, d3.max(Object.values(maxCountsByCity))]);
 
         var y = d3.scaleBand()
           .range([0, height])
