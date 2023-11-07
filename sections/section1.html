@@ -236,12 +236,16 @@
 
         var color = d3.scaleOrdinal(d3.schemeCategory10);
 
+        // Create an array of unique tree types
+        var treeTypes = Array.from(new Set(topTreeTypes.flatMap((city) => city.data.map((d) => d.key))));
+
+        // Stack the data
         var stack = d3.stack()
-          .keys(topTreeTypes[0].data.map((d) => d.key))
+          .keys(treeTypes)
           .order(d3.stackOrderNone)
           .offset(d3.stackOffsetNone);
 
-        var stackedData = stack(topTreeTypes.map((d) => d.data));
+        var stackedData = stack(topTreeTypes.map((city) => city.data));
 
         console.log(stackedData);
 
