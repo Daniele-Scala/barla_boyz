@@ -38,11 +38,13 @@
           <select id="city-selector">
               <label for="dataset-dropdown"  style="margin-left: 10px;">Select City:</label>
           </select>
-          <div id="bar-chart"></div>          
+          <div id="bar-chart"></div> 
+          <select id="state-selector">
+            <label for="dataset-dropdown"  style="margin-left: 10px;">Select State:</label>
+          </select>         
           <div id="stacked-bar-chart"></div>
       </div>
   </div>
-
   <script>
     d3.json("../Data/dataset1.json").then(function (data) {
       var citySelector = d3.select("#city-selector");
