@@ -40,11 +40,12 @@
 
     <script>
         d3.json("../Data/dataset1.json").then(function(data) {
-            // Estrai le 10 città più popolose
+            // Estrai le 10 città diverse più popolose
             const topCities = data
                 .sort((a, b) => b.count - a.count)
-                .slice(0, 10)
-                .map(d => d.city);
+                .map(d => d.city)
+                .filter((value, index, self) => self.indexOf(value) === index)
+                .slice(0, 10);
             //stampa le città
             console.log(topCities);
 
@@ -74,9 +75,9 @@
             }
 
             // Imposta le dimensioni della heatmap
-            const width = 500;
-            const height = 500;
-            const cellSize = 50;
+            const width = 600;
+            const height = 600;
+            const cellSize = 40;
 
             // Scala dei colori
             const colorScale = d3.scaleSequential(d3.interpolateGreens)
@@ -109,6 +110,23 @@
                 .attr("text-anchor", "middle")
                 .attr("dominant-baseline", "middle")
                 .text(d => d.count);
+            
+            //per ogni cella voglio un mouseover che mi indica la città, il tipo di albero e il numero di alberi
+            cells.on("mouseover", function(d) {
+                d3.select(this).attr("stroke", "black");
+                d3.select("#city").text(d.city);
+                d3.select("#tree-type").text(d.treeType);
+                d3.select("#count").text(d.count);
+            });
+
+            cells.on("mouseout", function(d) {
+                d3.select(this).attr("stroke", null);
+                d3.select("#city").text("");
+                d3.select("#tree-type").text("");
+                d3.select("#count").text("");
+            });
+
+            
 
             // Aggiungi etichette delle città e dei tipi di alberi
             svg.selectAll("text.city-label")
