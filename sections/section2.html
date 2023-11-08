@@ -65,7 +65,6 @@
             console.log(topTreeTypes);
 
             const heatmapData = [];
-            
 
             // Costruisci i dati per la heatmap
             for (let i = 0; i < topCities.length; i++) {
@@ -140,29 +139,16 @@
                 .text("City");
 
             // Crea le celle della heatmap
-            const cells = svg.selectAll("rect")
+            const cells = svg
+                .selectAll("rect")
                 .data(heatmapData)
                 .enter()
                 .append("rect")
-                .attr("x", (d, i) => (i % topTreeTypes.length) * cellSize)
-                .attr("y", (d, i) => Math.floor(i / topTreeTypes.length) * cellSize)
-                .attr("width", cellSize)
-                .attr("height", cellSize)
+                .attr("x", d => x(d.treeType))
+                .attr("y", d => y(d.city))
+                .attr("width", x.bandwidth())
+                .attr("height", y.bandwidth())
                 .attr("fill", d => colorScale(d.count));
-
-
-            // Aggiungi testo alle celle
-            /*
-            svg.selectAll("text")
-                .data(heatmapData)
-                .enter()
-                .append("text")
-                .attr("x", (d, i) => (i % topTreeTypes.length) * cellSize + cellSize / 2)
-                .attr("y", (d, i) => Math.floor(i / topTreeTypes.length) * cellSize + cellSize / 2)
-                .attr("text-anchor", "middle")
-                .attr("dominant-baseline", "middle")
-                .text(d => d.count);
-            */
 
             //per ogni cella voglio un mouseover che mostra un tooltip che mi indica la città, il tipo di albero e il numero di alberi
             cells.on("mouseover", function(event, d) {
@@ -170,37 +156,19 @@
                 tooltip.transition().duration(200).style("opacity", 0.9);
                 tooltip
                     .html(
-                        `<strong>City: ${d.city}</strong><br>
-                        <strong>$Scientific name: {d.treeType}</strong><br>
-                        <strong>$Number of trees: {d.count}</strong>`
+                    `<strong>City: ${d.city}</strong><br>
+                    <strong>Scientific name: ${d.treeType}</strong><br>
+                    <strong>Number of trees: ${d.count}</strong>`
                     )
                     .style("left", event.pageX + "px")
                     .style("top", event.pageY - 28 + "px");
             })
-            .on("mouseout", function(event, d) {
+                .on("mouseout", function(event, d) {
                 d3.select(this).style("stroke", "none");
                 tooltip.transition().duration(500).style("opacity", 0);
-            });
+                });
 
-            // Aggiungi etichette delle città e dei tipi di alberi
-            /*svg.selectAll("text.city-label")
-            .data(topCities)
-            .enter()
-            .append("text")
-            .attr("class", "city-label")
-            .attr("x", -40) 
-            .attr("y", (d, i) => i * cellSize + cellSize / 2)
-            .text(d => d);
-
-            svg.selectAll("text.tree-type-label")
-            .data(topTreeTypes)
-            .enter()
-            .append("text")
-            .attr("class", "tree-type-label")
-            .attr("x", (d, i) => i * cellSize + cellSize / 2)
-            .attr("y", height + 40) 
-            .text(d => d);
-            */
+            
         });
     </script>
 
