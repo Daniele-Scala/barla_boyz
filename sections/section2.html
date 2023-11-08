@@ -148,8 +148,8 @@
                     <strong>Tree: ${d.treeType}</strong><br>
                     <strong>Number: ${d.count}</strong>`
                     )
-                    .style("left", event.pageX - 12 +"px")
-                    .style("top", event.pageY - 28 + "px");
+                    .style("left", event.pageX + 24 +"px")
+                    .style("top", event.pageY - 32 + "px");
                 })
             .on("mouseout", function(event, d) {
                 d3.select(this)
