@@ -84,7 +84,7 @@
             // Imposta le dimensioni della heatmap
             var width = 400;
             var height = 400;
-            var cellSize = 40;
+            var cellSize = 30;
             var margin = {top: 20, right: 20, bottom: 30, left: 140};
 
             // Scala per l'asse x
@@ -102,7 +102,6 @@
             // Scala dei colori
             const colorScale = d3.scaleSequential(d3.interpolateGreens)
                 .domain([0, d3.max(heatmapData, d => d.count)]);
-
             
             //stampa i dati
             console.log(heatmapData);
@@ -124,6 +123,22 @@
                 .attr("transform", `translate(${margin.left}, 0)`)
                 .call(d3.axisLeft(y).tickSizeOuter(0));
 
+            // Aggiungi etichette alle assi
+            svg.append("text")
+                .attr("class", "x-axis-label")
+                .attr("x", width / 2)
+                .attr("y", height - margin.bottom / 2)
+                .attr("text-anchor", "middle")
+                .text("Tree type");
+
+            svg.append("text")
+                .attr("class", "y-axis-label")
+                .attr("x", -height / 2)
+                .attr("y", margin.left / 2)
+                .attr("text-anchor", "middle")
+                .attr("transform", "rotate(-90)")
+                .text("City");
+
             // Crea le celle della heatmap
             const cells = svg.selectAll("rect")
                 .data(heatmapData)
@@ -134,6 +149,7 @@
                 .attr("width", cellSize)
                 .attr("height", cellSize)
                 .attr("fill", d => colorScale(d.count));
+
 
             // Aggiungi testo alle celle
             /*
@@ -147,19 +163,22 @@
                 .attr("dominant-baseline", "middle")
                 .text(d => d.count);
             */
+
             //per ogni cella voglio un mouseover che mostra un tooltip che mi indica la città, il tipo di albero e il numero di alberi
             cells.on("mouseover", function(event, d) {
+                d3.select(this).style("stroke", "black");
                 tooltip.transition().duration(200).style("opacity", 0.9);
                 tooltip
                     .html(
-                        `<strong>${d.city}</strong><br>
-                        <strong>${d.treeType}</strong><br>
-                        <strong>${d.count}</strong>`
+                        `<strong>City: ${d.city}</strong><br>
+                        <strong>$Scientific name: {d.treeType}</strong><br>
+                        <strong>$Number of trees: {d.count}</strong>`
                     )
                     .style("left", event.pageX + "px")
                     .style("top", event.pageY - 28 + "px");
             })
             .on("mouseout", function(event, d) {
+                d3.select(this).style("stroke", "none");
                 tooltip.transition().duration(500).style("opacity", 0);
             });
 
