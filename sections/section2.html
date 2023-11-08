@@ -82,10 +82,10 @@
             }
 
             // Imposta le dimensioni della heatmap
-            const width = 800;
-            const height = 400;
-            const cellSize = 40;
-            const margin = {top: 20, right: 20, bottom: 30, left: 140};
+            var width = 400;
+            var height = 400;
+            var cellSize = 40;
+            var margin = {top: 20, right: 20, bottom: 30, left: 140};
 
             // Scala per l'asse x
             const x = d3.scaleBand()
@@ -108,7 +108,7 @@
             console.log(heatmapData);
 
             // Crea il container per la heatmap
-            const svg = d3.select("body")
+            const svg = d3.select("#heatmap")
                 .append("svg")
                 .attr("width", width)
                 .attr("height", height)
@@ -136,6 +136,7 @@
                 .attr("fill", d => colorScale(d.count));
 
             // Aggiungi testo alle celle
+            /*
             svg.selectAll("text")
                 .data(heatmapData)
                 .enter()
@@ -145,7 +146,7 @@
                 .attr("text-anchor", "middle")
                 .attr("dominant-baseline", "middle")
                 .text(d => d.count);
-            
+            */
             //per ogni cella voglio un mouseover che mostra un tooltip che mi indica la città, il tipo di albero e il numero di alberi
             cells.on("mouseover", function(event, d) {
                 tooltip.transition().duration(200).style("opacity", 0.9);
@@ -163,7 +164,7 @@
             });
 
             // Aggiungi etichette delle città e dei tipi di alberi
-            svg.selectAll("text.city-label")
+            /*svg.selectAll("text.city-label")
             .data(topCities)
             .enter()
             .append("text")
@@ -180,6 +181,7 @@
             .attr("x", (d, i) => i * cellSize + cellSize / 2)
             .attr("y", height + 40) 
             .text(d => d);
+            */
         });
     </script>
 
