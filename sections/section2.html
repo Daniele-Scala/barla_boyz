@@ -112,10 +112,13 @@
                 .attr("height", height)
                 .attr("margin", margin);
 
-            // Crea l'asse x
+            // Crea l'asse x con le scritte ruotate di 45 gradi per la leggibilità
             svg.append("g")
-                .attr("transform", `translate(0, ${height - margin.bottom})rotate(-45)`)
-                .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0));
+                .attr("transform", `translate(0, ${height - margin.bottom})`)
+                .call(d3.axisBottom(x).tickSizeOuter(0))
+                .selectAll("text")
+                .attr("transform", "rotate(45)")
+                .attr("text-anchor", "start");
             
             // Crea l'asse y
             svg.append("g")
