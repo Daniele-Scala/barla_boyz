@@ -79,6 +79,10 @@
             const height = 800;
             const cellSize = 40;
             const margin = {top: 80, right: 80, bottom: 80, left: 80};
+            // Define a linear scale for the width
+            const x = d3.scaleLinear()
+            .domain([0, d3.max(heatmapData, d => d.count)])
+            .range([0, cellSize]);
 
             // Scala dei colori
             const colorScale = d3.scaleSequential(d3.interpolateGreens)
@@ -119,7 +123,7 @@
                 d3.select(this)
                 .transition()
                 .duration(200)
-                .attr("width", x(d[1]) + 10);
+                .attr("width", d => x(d.count) + 10);
                 tooltip.transition().duration(200).style("opacity", 0.9);
                 tooltip.html(`Scientific name: ${d[0]}<br>Count: ${d[1]}<br>Average Height: ${getAverageHeight(d[0])} meters`)
                         .style("left",(d3.event.pageX + 40) + "px")
@@ -131,7 +135,7 @@
                 d3.select(this)
                 .transition()
                 .duration(200)
-                .attr("width", x(d[1]));
+                .attr("width", d => x(d.count));
                 tooltip.transition().duration(500).style("opacity", 0);
             });
 
