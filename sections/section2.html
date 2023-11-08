@@ -41,12 +41,12 @@
 
     <script>
         d3.json("../Data/dataset1.json").then(function(data) {
-            // Estrai le 10 città diverse più popolose
+            // Estrai le 15 città diverse più popolose
             const topCities = data
                 .sort((a, b) => b.count - a.count)
                 .map(d => d.city)
                 .filter((value, index, self) => self.indexOf(value) === index)
-                .slice(0, 10);
+                .slice(0, 15);
             //stampa le città
             console.log(topCities);
 
@@ -56,10 +56,10 @@
                 .attr("class", "tooltip")
                 .style("opacity", 0);
 
-            // Estrai i 10 tipi di alberi più presenti
+            // Estrai i 15 tipi di alberi più presenti
             const topTreeTypes = data
                 .sort((a, b) => b.count - a.count)
-                .slice(0, 10)
+                .slice(0, 15)
                 .map(d => d.scientific_name);
 
             //stampa gli alberi
@@ -145,17 +145,17 @@
                 tooltip
                     .html(
                     `<strong>City: ${d.city}</strong><br>
-                    <strong>Scientific name: ${d.treeType}</strong><br>
-                    <strong>Number of trees: ${d.count}</strong>`
+                    <strong>Tree: ${d.treeType}</strong><br>
+                    <strong>Number: ${d.count}</strong>`
                     )
-                    .style("left", event.pageX + 10 +"px")
+                    .style("left", event.pageX - 12 +"px")
                     .style("top", event.pageY - 28 + "px");
                 })
             .on("mouseout", function(event, d) {
                 d3.select(this)
                     .style("stroke", "none")
                     .transition()
-                    .duration(200);                    ;
+                    .duration(200);
                 tooltip.transition().duration(500).style("opacity", 0);
             });
         });
