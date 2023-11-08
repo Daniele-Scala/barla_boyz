@@ -81,10 +81,10 @@
             }
 
             // Imposta le dimensioni della heatmap
-            var width = 400;
-            var height = 400;
+            var width = 800;
+            var height = 800;
             var cellSize = 30;
-            var margin = {top: 20, right: 20, bottom: 30, left: 140};
+            var margin = {top: 40, right: 20, bottom: 60, left: 140};
 
             // Scala per l'asse x
             const x = d3.scaleBand()
@@ -156,29 +156,18 @@
             });
 
             //creo la legenda
-            const legend = svg
-                .selectAll(".legend")
-                .data(colorScale.ticks(6).slice(1))
-                .enter()
-                .append("g")
-                .attr("class", "legend")
-                .attr("transform", (d, i) => `translate(${width - margin.right}, ${height - margin.bottom - 20 - i * 20})`);
+            const legend_svg = d3.select("#heatmap")
+            .append("svg")
+            .attr("id", "heatmap_legend_svg")
+            .attr("width", 1100)
+            .attr("height", 80)
+            .append("g")
+            .attr("transform", `translate(170, -30)`);
 
-            //creo i rettangoli della legenda
-            legend
-                .append("rect")
-                .attr("width", 20)
-                .attr("height", 20)
-                .attr("fill", colorScale);
-
-            //creo i testi della legenda
-            legend
-                .append("text")
-                .attr("x", 26)
-                .attr("y", 10)
-                .attr("dy", "0.35em")
-                .text(d => d);
-            
+            //creo la scala per la legenda
+            const legendScale = d3.scaleLinear()
+                .domain([0, d3.max(heatmapData, d => d.count)])
+                .range([0, 400]);
         });
     </script>
 
