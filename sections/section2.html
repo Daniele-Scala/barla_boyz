@@ -35,6 +35,7 @@
         <div class="row">
             <h2>City comparison by heatmap</h2>
             <div id="heatmap"></div>
+            <br><br>
         </div>
     </div>
 
@@ -81,10 +82,9 @@
             }
 
             // Imposta le dimensioni della heatmap
-            var width = 800;
-            var height = 800;
-            var cellSize = 30;
-            var margin = {top: 40, right: 20, bottom: 60, left: 140};
+            var width = 600;
+            var height = 600;
+            var margin = {top: 40, right: 20, bottom: 120, left: 140};
 
             // Scala per l'asse x
             const x = d3.scaleBand()
@@ -117,7 +117,7 @@
                 .attr("transform", `translate(0, ${height - margin.bottom})`)
                 .call(d3.axisBottom(x).tickSizeOuter(0))
                 .selectAll("text")
-                .attr("transform", "rotate(45)")
+                .attr("transform", "rotate(-45)")
                 .attr("text-anchor", "start");
             
             // Crea l'asse y
@@ -140,19 +140,21 @@
             //per ogni cella voglio un mouseover che mostra un tooltip che mi indica la città, il tipo di albero e il numero di alberi
             cells.on("mouseover", function(event, d) {
                 d3.select(this).style("stroke", "black");
-                tooltip.transition().duration(200).style("opacity", 0.9);
+                tooltip.transition()
+                    .duration(200).style("opacity", 0.9);
                 tooltip
                     .html(
                     `<strong>City: ${d.city}</strong><br>
                     <strong>Scientific name: ${d.treeType}</strong><br>
                     <strong>Number of trees: ${d.count}</strong>`
                     )
-                    .style("left", event.pageX + "px")
-                    .style("top", event.pageY - 28 + "px");
                 })
             .on("mouseout", function(event, d) {
-            d3.select(this).style("stroke", "none");
-            tooltip.transition().duration(500).style("opacity", 0);
+                d3.select(this)
+                    .style("stroke", "none")
+                    .transition()
+                    .duration(200);                    ;
+                tooltip.transition().duration(500).style("opacity", 0);
             });
 
             //creo la legenda
@@ -163,6 +165,12 @@
             .attr("height", 80)
             .append("g")
             .attr("transform", `translate(170, -30)`);
+
+            //creo il rettangolo per la legenda
+            legend_svg.append("rect")
+                .attr("width", 400)
+                .attr("height", 20)
+                .attr("fill", "url(#linear-gradient)");
 
             //creo la scala per la legenda
             const legendScale = d3.scaleLinear()
