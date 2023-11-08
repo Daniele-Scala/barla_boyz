@@ -117,7 +117,7 @@
                 .attr("transform", `translate(0, ${height - margin.bottom})`)
                 .call(d3.axisBottom(x).tickSizeOuter(0))
                 .selectAll("text")
-                .attr("transform", "rotate(-45)")
+                .attr("transform", "rotate(45)")
                 .attr("text-anchor", "start");
             
             // Crea l'asse y
@@ -148,6 +148,8 @@
                     <strong>Scientific name: ${d.treeType}</strong><br>
                     <strong>Number of trees: ${d.count}</strong>`
                     )
+                    .style("left", event.pageX + 10 +"px")
+                    .style("top", event.pageY - 28 + "px");
                 })
             .on("mouseout", function(event, d) {
                 d3.select(this)
@@ -156,26 +158,6 @@
                     .duration(200);                    ;
                 tooltip.transition().duration(500).style("opacity", 0);
             });
-
-            //creo la legenda
-            const legend_svg = d3.select("#heatmap")
-            .append("svg")
-            .attr("id", "heatmap_legend_svg")
-            .attr("width", 1100)
-            .attr("height", 80)
-            .append("g")
-            .attr("transform", `translate(170, -30)`);
-
-            //creo il rettangolo per la legenda
-            legend_svg.append("rect")
-                .attr("width", 400)
-                .attr("height", 20)
-                .attr("fill", "url(#linear-gradient)");
-
-            //creo la scala per la legenda
-            const legendScale = d3.scaleLinear()
-                .domain([0, d3.max(heatmapData, d => d.count)])
-                .range([0, 400]);
         });
     </script>
 
