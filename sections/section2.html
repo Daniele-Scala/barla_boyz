@@ -114,29 +114,13 @@
 
             // Crea l'asse x
             svg.append("g")
-                .attr("transform", `translate(0, ${height - margin.bottom})`)
+                .attr("transform", `translate(0, ${height - margin.bottom})rotate(-45)`)
                 .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0));
             
             // Crea l'asse y
             svg.append("g")
                 .attr("transform", `translate(${margin.left}, 0)`)
                 .call(d3.axisLeft(y).tickSizeOuter(0));
-
-            // Aggiungi etichette alle assi
-            svg.append("text")
-                .attr("class", "x-axis-label")
-                .attr("x", width / 2)
-                .attr("y", height - margin.bottom / 2)
-                .attr("text-anchor", "middle")
-                .text("Tree type");
-
-            svg.append("text")
-                .attr("class", "y-axis-label")
-                .attr("x", -height / 2)
-                .attr("y", margin.left / 2)
-                .attr("text-anchor", "middle")
-                .attr("transform", "rotate(-90)")
-                .text("City");
 
             // Crea le celle della heatmap
             const cells = svg
@@ -162,12 +146,35 @@
                     )
                     .style("left", event.pageX + "px")
                     .style("top", event.pageY - 28 + "px");
-            })
-                .on("mouseout", function(event, d) {
-                d3.select(this).style("stroke", "none");
-                tooltip.transition().duration(500).style("opacity", 0);
-                });
+                })
+            .on("mouseout", function(event, d) {
+            d3.select(this).style("stroke", "none");
+            tooltip.transition().duration(500).style("opacity", 0);
+            });
 
+            //creo la legenda
+            const legend = svg
+                .selectAll(".legend")
+                .data(colorScale.ticks(6).slice(1))
+                .enter()
+                .append("g")
+                .attr("class", "legend")
+                .attr("transform", (d, i) => `translate(${width - margin.right}, ${height - margin.bottom - 20 - i * 20})`);
+
+            //creo i rettangoli della legenda
+            legend
+                .append("rect")
+                .attr("width", 20)
+                .attr("height", 20)
+                .attr("fill", colorScale);
+
+            //creo i testi della legenda
+            legend
+                .append("text")
+                .attr("x", 26)
+                .attr("y", 10)
+                .attr("dy", "0.35em")
+                .text(d => d);
             
         });
     </script>
