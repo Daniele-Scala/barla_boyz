@@ -1,0 +1,28 @@
+For web programming we planned to use:
+
+- HTML + CSS, to build web page structure and graphic settings (pages will be adapted to desktop view). We will use also the framework Bootstrap to manage the style of the pages
+
+- JAVASCRIPT, to retrieve the transformed data and insert it dynamically into the HTML page
+
+- JQUERY, as a library to simplify the management of dynamic data visualization (probably more useful in the advanced stages of the project)
+
+- JSON, to keep the data in a structured format.
+
+
+For data handling and management we thought of using:
+
+- PYTHON, to extract the necessary data and its manipulation thanks to libraries such as pandas.
+
+As development environment, we use:
+
+- Visual Studio Code, for each of the design phases, dividing the "project" folder into subfolders to maintain order among the different file formats and their functionalities.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Self evaluation:
+
+At the moment, regarding programming/web handling languages, we have a quite solid knowledge of HTLM and PHP (even the latter is not currently useful, at least for the first assignment), while we are both extremely lacking in knowledge of JAVASCRIPT and JSON (the latter we have, as yet, never used).
+
+We know how to use PYTHON fairly well, although we have never done any real "data cleaning" operations, so we will work our way through some documentation for appropriate functions.
+
+In terms of the tools involved, we find a bit of difficulty in dealing with GITHUB (since it is one of the first times we interface with it personally), but we both know that it is not a hostile environment to manipulate.
