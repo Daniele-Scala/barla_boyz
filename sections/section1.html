@@ -337,7 +337,7 @@
         const colorScale = d3.scaleSequential(d3.interpolateGreens)
             .domain([0, d3.max(heatmapData, d => d.count)]);
       
-
+            console.log(heatmapData);
         // container for heatmap
         const svg = d3.select("#heatmap")
             .append("svg")
