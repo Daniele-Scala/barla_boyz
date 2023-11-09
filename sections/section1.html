@@ -140,12 +140,6 @@
            tooltip.html(`Scientific name: ${d[0]}<br>Count: ${d[1]}<br>Average Height: ${getAverageHeight(d[0])} meters`)
                   .style("left",(d3.event.pageX + 40) + "px")
                   .style("top", (d3.event.pageY - 40) + "px");
-
-
-            /*tooltip
-              .html(d[0] + ": " + d[1])
-              .style("left", d3.event.pageX + "px")
-              .style("top", d3.event.pageY - 28 + "px");*/
           })
           .on("mouseout", function (d) {
             d3.select(this).style("fill", "green");
@@ -387,8 +381,8 @@
                 <strong>Tree: ${d.treeType}</strong><br>
                 <strong>Number: ${d.count}</strong>`
                 )
-                .style("left", event.pageX + 24 +"px")
-                .style("top", event.pageY - 32 + "px");
+                .style("left",(d3.event.pageX + 40) + "px")
+                .style("top", (d3.event.pageY - 40) + "px");
             })
         .on("mouseout", function(event, d) {
             d3.select(this)
