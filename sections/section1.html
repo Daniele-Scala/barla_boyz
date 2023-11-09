@@ -137,7 +137,7 @@
             tooltip.transition().duration(200).style("opacity", 0.9);
 
            // Customize the tooltip content
-           tooltip.html(`Scientific name: ${d[0]}<br>Count: ${d[1]}<br>Average Height: ${getAverageHeight(d[0])} meters`)
+           tooltip.html(`<strong>Scientific name: ${d[0]}<br>Count: ${d[1]}<br>Average Height: ${getAverageHeight(d[0])} meters</strong>`)
                   .style("left",(d3.event.pageX + 40) + "px")
                   .style("top", (d3.event.pageY - 40) + "px");
           })
@@ -374,15 +374,15 @@
         cells.on("mouseover", function(event, d) {
             d3.select(this).style("stroke", "black");
             tooltip.transition()
-                .duration(200).style("opacity", 0.9);
+              .duration(200).style("opacity", 0.9);
             tooltip
-                .html(
-                `<strong>City: ${d.city}</strong><br>
-                <strong>Tree: ${d.treeType}</strong><br>
-                <strong>Number: ${d.count}</strong>`
-                )
-                .style("left",(d3.event.pageX + 40) + "px")
-                .style("top", (d3.event.pageY - 40) + "px");
+              .html(
+              `<strong>City: ${d.city} </strong><br>
+              <strong>Tree: ${d.treeType} </strong><br>
+              <strong>Number: ${d.count} </strong>`
+              )
+              .style("left",(d3.event.pageX + 40) + "px")
+              .style("top", (d3.event.pageY - 40) + "px");
             })
         .on("mouseout", function(event, d) {
             d3.select(this)
