@@ -290,7 +290,7 @@
             .filter((value, index, self) => self.indexOf(value) === index)
             .slice(0, 15);
 
-        var tooltip2 = d3
+        var tooltip = d3
             .select("body")
             .append("div")
             .attr("class", "tooltip")
@@ -373,9 +373,9 @@
         //mouseover to show tooltip about the cell information
         cells.on("mouseover", function(event, d) {
             d3.select(this).style("stroke", "black");
-            tooltip2.transition()
+            tooltip.transition()
                 .duration(200).style("opacity", 0.9);
-            tooltip2
+            tooltip
                 .html(
                 `<strong>City: ${d.city}</strong><br>
                 <strong>Tree: ${d.treeType}</strong><br>
@@ -389,7 +389,7 @@
                 .style("stroke", "none")
                 .transition()
                 .duration(200);
-            tooltip2.transition().duration(500).style("opacity", 0);
+            tooltip.transition().duration(500).style("opacity", 0);
         });
     });
   </script>
