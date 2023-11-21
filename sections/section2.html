@@ -59,24 +59,21 @@
         d3.json("../Data/dataset1.json").then(function (data) {
             console.log(data);  // Log the entire dataset
 
-            debugger
-
             // Nest the filtered data by state, city, and scientific_name
             var nestedData = d3.rollup(filteredData, 
                 v => d3.groups(v, d => d.state, d => d.city, d => d.scientific_name),
                 d => d.state
             );
 
-            // Create a root node for the dendrogram
-            var root = d3.hierarchy({ values: nestedData }, function (d) { return d[1]; })
-                .sum(function (d) { return d[1].length; });
+            // Create a custom root node
+            var customRoot = { values: nestedData, key: "root" }; // Add a key property to avoid errors
 
             // Create a cluster layout
             var tree = d3.cluster()
                 .size([height, width - 100]);
 
             // Compute the layout
-            tree(root);
+            tree(d3.hierarchy(customRoot, function (d) { return d.values; }));
 
             // Add links
             svg.selectAll(".link")
