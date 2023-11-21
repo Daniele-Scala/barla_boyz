@@ -60,7 +60,7 @@
             console.log(data);  // Log the entire dataset
 
             // Nest the filtered data by state, city, and scientific_name
-            var nestedData = d3.rollup(filteredData, 
+            var nestedData = d3.rollup(data, 
                 v => d3.groups(v, d => d.state, d => d.city, d => d.scientific_name),
                 d => d.state
             );
