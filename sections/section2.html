@@ -43,7 +43,7 @@
 
 
     // Load the JSON data
-    d3.json("Data/dataset1.json").then(function(data) {
+    d3.json("../Data/dataset1.json").then(function(data) {
         // Process the data to create layers
         var stateData = d3.nest()
         .key(d => d.state)
