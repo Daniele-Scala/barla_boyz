@@ -44,41 +44,32 @@
 
     // Load the JSON data
     d3.json("../Data/dataset1.json").then(function(data) {
-        // Process the data to create layers
-        var stateData = d3.nest()
-        .key(d => d.state)
-        .entries(data);
-    
-        var cityData = d3.nest()
-        .key(d => d.city)
-        .entries(data);
-    
-        var treeData = d3.nest()
-        .key(d => d.scientific_name)
-        .entries(data);
-    
+        // Create layers manually
+        var stateData = Array.from(d3.group(data, d => d.state), ([name, values]) => ({ name, values }));
+        var cityData = Array.from(d3.group(data, d => d.city), ([name, values]) => ({ name, values }));
+        var treeData = Array.from(d3.group(data, d => d.scientific_name), ([name, values]) => ({ name, values }));
+
         // Create the alluvial graph
         var alluvial = d3.alluvial()
-        .nodeWidth(15)
-        .nodePadding(10)
-        .size([800, 400]);
-    
+            .nodeWidth(15)
+            .nodePadding(10)
+            .size([800, 400]);
+
         d3.select("#alluvialGraph")
-        .datum({
+            .datum({
             nodes: [
-            { name: "State" },
-            { name: "City" },
-            { name: "Tree species" }
+                { name: "State" },
+                { name: "City" },
+                { name: "Tree species" }
             ],
             layers: [
-            { name: "State", values: stateData },
-            { name: "City", values: cityData },
-            { name: "Tree species", values: treeData }
+                { name: "State", values: stateData },
+                { name: "City", values: cityData },
+                { name: "Tree species", values: treeData }
             ]
-        })
-        .call(alluvial);
-    });
-    
+            })
+            .call(alluvial);
+        });
     </script>
     
     <footer class="bg-dark text-light text-center p-2">
