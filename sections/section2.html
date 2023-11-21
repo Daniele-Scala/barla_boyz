@@ -59,13 +59,7 @@
         d3.json("../Data/dataset1.json").then(function (data) {
             console.log(data);  // Log the entire dataset
 
-            // Specify the tree types you want to include
-            var selectedTreeTypes = ["Acer", "Quercus"];
-
-            // Filter the data based on selected tree types
-            var filteredData = data.filter(function (d) {
-                return selectedTreeTypes.includes(d.scientific_name);
-            });
+            debugger
 
             // Nest the filtered data by state, city, and scientific_name
             var nestedData = d3.rollup(filteredData, 
