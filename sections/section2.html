@@ -33,14 +33,15 @@
         </div>
     </nav>
 
-    <h1><strong>Assignment 2: Distributions</strong></h1>
-    <div class="row">
-        <br><br><br><br>
-          <h2>Alluvial</h2>
-
-    <div id="alluvialGraph"></div>
+    
+    <div class="container text-center flex-grow-1 my-5"> <!-- Aggiunto "flex-grow-1" per far crescere il div e "my-5" per aggiungere spazio sopra e sotto -->
+        <h1><strong>Assignment 2: Distributions</strong></h1>
+        <h2>Alluvial</h2>
+        <div id="alluvialGraph"></div>
     </div>    
     <script>
+
+
     // Load the JSON data
     d3.json('Data/dataset1.json').then(function(data) {
         // Process the data to create layers
