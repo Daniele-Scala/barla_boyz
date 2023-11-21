@@ -14,69 +14,81 @@
 <script>
     d3.json("../Data/dataset1.json").then(function (data) {
 
-        // Extract unique nodes
-        const nodes = [
-            ...new Set([...data.map(d => d.state), ...data.map(d => d.city), ...data.map(d => d.scientific_name)])
-        ];
+        // Step 1: Format the data into a structure that d3-sankey understands
+        var sankeyData = {
+            nodes: [],
+            links: []
+        };
 
-        // Create links for the Sankey diagram
-        const links = data.map(d => ({
-            source: nodes.indexOf(d.state),
-            target: nodes.indexOf(d.city),
-            value: d.count
-        }));
+        data.forEach(function (d) {
+            sankeyData.nodes.push({ name: d.state }); // State
+            sankeyData.nodes.push({ name: d.city });  // City
+            sankeyData.nodes.push({ name: d.scientific_name }); // Tree species
 
-        // Create the SVG container
-        const svg = d3.select("#alluvialDiagram")
-            .append("svg")
-            .attr("width", 800)
-            .attr("height", 600);
+            sankeyData.links.push({
+                source: d.state,
+                target: d.city,
+                value: d.count
+            });
 
-        // Set up the Sankey diagram
-        const sankey = d3.sankey()
+            sankeyData.links.push({
+                source: d.city,
+                target: d.scientific_name,
+                value: d.count
+            });
+        });
+
+        // Step 2: Create the alluvial diagram using d3-sankey
+        var width = 960;
+        var height = 600;
+
+        var sankey = d3.sankey()
             .nodeWidth(15)
             .nodePadding(10)
-            .extent([[0, 5], [800, 595]])
-            .iterations(0);
+            .size([width, height]);
 
-        const { nodes: sankeyNodes, links: sankeyLinks } = sankey({ nodes, links });
+        var path = sankey.link();
 
-        // Draw the links
-        svg.append("g")
-            .selectAll("path")
-            .data(sankeyLinks)
-            .enter()
-            .append("path")
-            .attr("d", d3.sankeyLinkHorizontal())
-            .attr("stroke", "#000")
-            .attr("stroke-opacity", 0.2)
-            .attr("fill", "none");
+        var svg = d3.select("#alluvialDiagram")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
 
-        // Draw the nodes
-        svg.append("g")
-            .selectAll("rect")
-            .data(sankeyNodes)
-            .enter()
-            .append("rect")
-            .attr("x", d => d.x0)
-            .attr("y", d => d.y0)
-            .attr("height", d => d.y1 - d.y0)
-            .attr("width", d => d.x1 - d.x0)
-            .attr("fill", "#69b3a2")
-            .attr("stroke", "black");
+        sankey
+            .nodes(sankeyData.nodes)
+            .links(sankeyData.links)
+            .layout(32);
 
-        // Add labels
-        svg.append("g")
-            .selectAll("text")
-            .data(sankeyNodes)
-            .enter()
-            .append("text")
-            .attr("x", d => (d.x0 + d.x1) / 2)
-            .attr("y", d => d.y0 - 5)
-            .attr("dy", "0.5em")
-            .attr("text-anchor", "middle")
-            .attr("font-size", "10px")
-            .text(d => d.name);
+        var link = svg.append("g")
+            .selectAll(".link")
+            .data(sankeyData.links)
+            .enter().append("path")
+            .attr("class", "link")
+            .attr("d", path)
+            .style("stroke-width", function (d) { return Math.max(1, d.dy); })
+            .sort(function (a, b) { return b.dy - a.dy; });
+
+        var node = svg.append("g")
+            .selectAll(".node")
+            .data(sankeyData.nodes)
+            .enter().append("g")
+            .attr("class", "node")
+            .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+        node.append("rect")
+            .attr("height", function (d) { return d.dy; })
+            .attr("width", sankey.nodeWidth());
+
+        node.append("text")
+            .attr("x", -6)
+            .attr("y", function (d) { return d.dy / 2; })
+            .attr("dy", ".35em")
+            .attr("text-anchor", "end")
+            .attr("transform", null)
+            .text(function (d) { return d.name; })
+            .filter(function (d) { return d.x < width / 2; })
+            .attr("x", 6 + sankey.nodeWidth())
+            .attr("text-anchor", "start");
     });
 </script>
 
