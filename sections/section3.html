@@ -47,8 +47,9 @@
             .nodePadding(10)
             .size([width, height])
             .nodes(sankeyData.nodes)
-            .links(sankeyData.links)
-            .layout(); // No need to call layout separately
+            .links(sankeyData.links);
+
+        sankey(sankeyData); // This line creates the layout
 
         var path = sankey.link();
 
@@ -68,7 +69,7 @@
 
         var node = svg.append("g")
             .selectAll(".node")
-            .data(sankey.nodes())
+            .data(sankeyData.nodes)
             .enter().append("g")
             .attr("class", "node")
             .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
