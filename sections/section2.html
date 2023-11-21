@@ -55,6 +55,8 @@
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
         var root;
+        var color = d3.scaleOrdinal(d3.schemeCategory10);
+
         // Load the data
         d3.json("../Data/dataset1.json").then(function (data) {
             console.log(data);  // Log the entire dataset
