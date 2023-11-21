@@ -20,37 +20,21 @@
             links: []
         };
 
-        // Helper function to find or add a node to the nodes array
-        function findNodeByName(name) {
-            var node = sankeyData.nodes.find(function (n) {
-                return n.name === name;
-            });
-
-            if (!node) {
-                node = { name: name };
-                sankeyData.nodes.push(node);
-            }
-
-            return node;
-        }
-
+        // Separate arrays for each category
+        var stateNodes = [];
+        var cityNodes = [];
+        var speciesNodes = [];
 
         data.forEach(function (d) {
-            var stateNode = findNodeByName(d.state);
-            var cityNode = findNodeByName(d.city);
-            var speciesNode = findNodeByName(d.scientific_name);
-
-            console.log("Source:", d.state, "Target:", d.city);
-            console.log("Source node:", stateNode, "Target node:", cityNode);
+            var stateNode = findNodeByName(stateNodes, d.state);
+            var cityNode = findNodeByName(cityNodes, d.city);
+            var speciesNode = findNodeByName(speciesNodes, d.scientific_name);
 
             sankeyData.links.push({
                 source: stateNode,
                 target: cityNode,
                 value: d.count
             });
-
-            console.log("Source:", d.city, "Target:", d.scientific_name);
-            console.log("Source node:", cityNode, "Target node:", speciesNode);
 
             sankeyData.links.push({
                 source: cityNode,
@@ -59,8 +43,8 @@
             });
         });
 
-console.log("Sankey data:", sankeyData);
-
+        // Merge the arrays into a single nodes array
+        sankeyData.nodes = stateNodes.concat(cityNodes, speciesNodes);
 
         // Create the alluvial diagram using d3-sankey
         var width = 960;
@@ -113,6 +97,20 @@ console.log("Sankey data:", sankeyData);
             .attr("x", 6 + sankey.nodeWidth())
             .attr("text-anchor", "start");
     });
+
+    // Helper function to find or add a node to the nodes array
+    function findNodeByName(nodesArray, name) {
+        var node = nodesArray.find(function (n) {
+            return n && n.name === name;
+        });
+
+        if (!node) {
+            node = { name: name };
+            nodesArray.push(node);
+        }
+
+        return node;
+    }
 </script>
 
 </body>
