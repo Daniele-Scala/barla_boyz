@@ -40,8 +40,6 @@
         <div id="alluvialGraph"></div>
     </div>    
     <script>
-
-
     // Load the JSON data
     d3.json("../Data/dataset1.json").then(function(data) {
         // Create layers manually
@@ -49,26 +47,63 @@
         var cityData = Array.from(d3.group(data, d => d.city), ([name, values]) => ({ name, values }));
         var treeData = Array.from(d3.group(data, d => d.scientific_name), ([name, values]) => ({ name, values }));
 
-        // Create the alluvial graph
-        var alluvial = d3.alluvial()
+        // Create the alluvial graph using d3-sankey
+        var sankey = d3.sankey()
             .nodeWidth(15)
             .nodePadding(10)
             .size([800, 400]);
 
-        d3.select("#alluvialGraph")
-            .datum({
+        var graph = sankey({
             nodes: [
-                { name: "State" },
-                { name: "City" },
-                { name: "Tree species" }
+            { name: "State" },
+            { name: "City" },
+            { name: "Tree species" }
             ],
-            layers: [
-                { name: "State", values: stateData },
-                { name: "City", values: cityData },
-                { name: "Tree species", values: treeData }
+            links: [
+            { source: 0, target: 1, value: 1 },
+            { source: 1, target: 2, value: 1 }
             ]
-            })
-            .call(alluvial);
+        });
+
+        // Create SVG container
+        var svg = d3.select("#alluvialGraph")
+            .append("svg")
+            .attr("width", 800)
+            .attr("height", 400);
+
+        // Draw links
+        svg.append("g")
+            .selectAll("path")
+            .data(graph.links)
+            .join("path")
+            .attr("d", d3.sankeyLinkHorizontal())
+            .attr("stroke", "#000")
+            .attr("stroke-width", d => Math.max(1, d.width))
+            .attr("fill", "none");
+
+        // Draw nodes
+        svg.append("g")
+            .selectAll("rect")
+            .data(graph.nodes)
+            .join("rect")
+            .attr("x", d => d.x0)
+            .attr("y", d => d.y0)
+            .attr("height", d => d.y1 - d.y0)
+            .attr("width", d => d.x1 - d.x0)
+            .attr("fill", "#69b3a2");
+
+        // Add labels to nodes
+        svg.append("g")
+            .selectAll("text")
+            .data(graph.nodes)
+            .join("text")
+            .attr("x", d => (d.x0 < 400) ? d.x1 + 6 : d.x0 - 6)
+            .attr("y", d => (d.y1 + d.y0) / 2)
+            .attr("dy", "0.35em")
+            .attr("text-anchor", d => (d.x0 < 400) ? "start" : "end")
+            .text(d => d.name)
+            .attr("font-size", 12);
+
         });
     </script>
     
