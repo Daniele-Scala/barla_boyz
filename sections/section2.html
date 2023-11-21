@@ -54,16 +54,14 @@
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-        // Define a color scale based on depth
+        var root;
         var color = d3.scaleOrdinal(d3.schemeCategory10);
 
         // Load the data
-        var root;
-
         d3.json("../Data/dataset1.json").then(function (data) {
             console.log(data);  // Log the entire dataset
 
-            // Nest the data by state, city, and scientific_name
+            // Nest the filtered data by state, city, and scientific_name
             var nestedData = d3.rollup(data, 
                 v => d3.groups(v, d => d.state, d => d.city, d => d.scientific_name),
                 d => d.state
@@ -77,7 +75,7 @@
                 .size([height, width - 100]);
 
             // Compute the layout
-            root = tree(d3.hierarchy(customRoot, function (d) { return d.values; }));
+            root=tree(d3.hierarchy(customRoot, function (d) { return d.values; }));
 
             // Add links
             svg.selectAll(".link")
@@ -88,71 +86,25 @@
                     .x(function (d) { return d.y; })
                     .y(function (d) { return d.x; }));
 
-            // Add nodes for states
-            var stateNodes = svg.selectAll(".state-node")
-                .data(root.descendants().filter(function(d) { return d.depth === 1; }))
+            // Add nodes
+            var node = svg.selectAll(".node")
+                .data(root.descendants())
                 .enter().append("g")
-                .attr("class", "state-node")
+                .attr("class", function (d) { return "node" + (d.children ? " node--internal" : " node--leaf"); })
                 .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; });
 
-            stateNodes.append("circle")
+            node.append("circle")
                 .attr("r", 4)
                 .style("fill", function (d) { return color(d.depth); });
 
-            stateNodes.append("text")
+            node.append("text")
                 .attr("dy", 3)
                 .attr("x", function (d) { return d.children ? -8 : 8; })
                 .style("text-anchor", function (d) { return d.children ? "end" : "start"; })
-                .text(function (d) { return d.data.key; });
+                .text(function (d) { return d.data[0]; });
+            console.log(data);  // Log the entire dataset
 
-            // Add nodes for cities
-            var cityNodes = svg.selectAll(".city-node")
-                .data(root.descendants().filter(function(d) { return d.depth === 2; }))
-                .enter().append("g")
-                .attr("class", "city-node")
-                .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; });
-
-            cityNodes.append("circle")
-                .attr("r", 4)
-                .style("fill", function (d) { return color(d.depth); });
-
-            cityNodes.append("text")
-                .attr("dy", 3)
-                .attr("x", function (d) { return d.children ? -8 : 8; })
-                .style("text-anchor", function (d) { return d.children ? "end" : "start"; })
-                .text(function (d) { return d.data.key; });
-
-            // Add nodes for trees
-            var treeNodes = svg.selectAll(".tree-node")
-                .data(root.descendants().filter(function(d) { return d.depth === 3; }))
-                .enter().append("g")
-                .attr("class", "tree-node")
-                .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; });
-
-            treeNodes.append("circle")
-                .attr("r", 4)
-                .style("fill", function (d) { return color(d.depth); });
-
-            treeNodes.append("text")
-                .attr("dy", 3)
-                .attr("x", function (d) { return d.children ? -8 : 8; })
-                .style("text-anchor", function (d) { return d.children ? "end" : "start"; })
-                .text(function (d) { return d.data.key; });
-
-            // Mouse hover effect
-            svg.selectAll(".node")
-                .on("mouseover", function (event, d) {
-                    // Display information about the node
-                    console.log("Node: ", d.data.key);
-                })
-                .on("mouseout", function (event, d) {
-                    // Clear information on mouse out
-                    console.log("Mouse out");
-                });
         });
-
-        // Move the rest of your code that depends on 'root' here
-
         
     </script>
 
