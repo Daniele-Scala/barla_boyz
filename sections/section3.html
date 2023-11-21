@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alluvial Diagram</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+<body>
+
+<div id="alluvialDiagram"></div>
+
+<script>
+    d3.json("../Data/dataset1.json").then(function (data) {
+
+        // Extract unique nodes
+        const nodes = [
+            ...new Set([...data.map(d => d.state), ...data.map(d => d.city), ...data.map(d => d.scientific_name)])
+        ];
+
+        // Create links for the Sankey diagram
+        const links = data.map(d => ({
+            source: nodes.indexOf(d.state),
+            target: nodes.indexOf(d.city),
+            value: d.count
+        }));
+
+        // Create the SVG container
+        const svg = d3.select("#alluvialDiagram")
+            .append("svg")
+            .attr("width", 800)
+            .attr("height", 600);
+
+        // Set up the Sankey diagram
+        const sankey = d3.sankey()
+            .nodeWidth(15)
+            .nodePadding(10)
+            .extent([[0, 5], [800, 595]])
+            .iterations(0);
+
+        const { nodes: sankeyNodes, links: sankeyLinks } = sankey({ nodes, links });
+
+        // Draw the links
+        svg.append("g")
+            .selectAll("path")
+            .data(sankeyLinks)
+            .enter()
+            .append("path")
+            .attr("d", d3.sankeyLinkHorizontal())
+            .attr("stroke", "#000")
+            .attr("stroke-opacity", 0.2)
+            .attr("fill", "none");
+
+        // Draw the nodes
+        svg.append("g")
+            .selectAll("rect")
+            .data(sankeyNodes)
+            .enter()
+            .append("rect")
+            .attr("x", d => d.x0)
+            .attr("y", d => d.y0)
+            .attr("height", d => d.y1 - d.y0)
+            .attr("width", d => d.x1 - d.x0)
+            .attr("fill", "#69b3a2")
+            .attr("stroke", "black");
+
+        // Add labels
+        svg.append("g")
+            .selectAll("text")
+            .data(sankeyNodes)
+            .enter()
+            .append("text")
+            .attr("x", d => (d.x0 + d.x1) / 2)
+            .attr("y", d => d.y0 - 5)
+            .attr("dy", "0.5em")
+            .attr("text-anchor", "middle")
+            .attr("font-size", "10px")
+            .text(d => d.name);
+    });
+</script>
+
+</body>
+</html>
