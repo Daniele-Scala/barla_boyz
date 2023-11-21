@@ -34,10 +34,14 @@
             return node;
         }
 
+
         data.forEach(function (d) {
             var stateNode = findNodeByName(d.state);
             var cityNode = findNodeByName(d.city);
             var speciesNode = findNodeByName(d.scientific_name);
+
+            console.log("Source:", d.state, "Target:", d.city);
+            console.log("Source node:", stateNode, "Target node:", cityNode);
 
             sankeyData.links.push({
                 source: stateNode,
@@ -45,12 +49,18 @@
                 value: d.count
             });
 
+            console.log("Source:", d.city, "Target:", d.scientific_name);
+            console.log("Source node:", cityNode, "Target node:", speciesNode);
+
             sankeyData.links.push({
                 source: cityNode,
                 target: speciesNode,
                 value: d.count
             });
         });
+
+console.log("Sankey data:", sankeyData);
+
 
         // Create the alluvial diagram using d3-sankey
         var width = 960;
