@@ -56,7 +56,8 @@
           <br><br><br><br>
       </div>
   </div>
-  <script>
+
+  <script> //BARCHART----------------------------------------------
     d3.json("../Data/dataset1.json").then(function (data) {
       var citySelector = d3.select("#city-selector");
       var cities = [...new Set(data.map((d) => d.city))];
@@ -173,7 +174,7 @@
     });
   </script>
 
-  <script>
+  <script> //STACKED BARCHART---------------------------------------------------------------
     d3.json("../Data/dataset1.json").then(function (data) {
       // Create the state selector dropdown
       var stateSelector = d3.select("#state-selector");
@@ -282,7 +283,7 @@
     });
   </script>
 
-  <script>
+  <script> //HEATMAP----------------------------------------------
     d3.json("../Data/dataset1.json").then(function(data) {
         const topCities = data
             .sort((a, b) => b.count - a.count)
