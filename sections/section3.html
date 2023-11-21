@@ -59,7 +59,7 @@
 
         sankey(sankeyData); // This line creates the layout
 
-        var path = sankey.link();
+        var path = sankey.linkHorizontal();
 
         var svg = d3.select("#alluvialDiagram")
             .append("svg")
