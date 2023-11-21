@@ -14,16 +14,16 @@
 <script>
     d3.json("../Data/dataset1.json").then(function (data) {
 
-        // Step 1: Format the data into a structure that d3-sankey understands
+        // Format the data into a structure that d3-sankey understands
         var sankeyData = {
             nodes: [],
             links: []
         };
 
         data.forEach(function (d) {
-            sankeyData.nodes.push({ name: d.state }); // State
-            sankeyData.nodes.push({ name: d.city });  // City
-            sankeyData.nodes.push({ name: d.scientific_name }); // Tree species
+            sankeyData.nodes.push({ name: d.state });
+            sankeyData.nodes.push({ name: d.city });
+            sankeyData.nodes.push({ name: d.scientific_name });
 
             sankeyData.links.push({
                 source: d.state,
@@ -38,19 +38,17 @@
             });
         });
 
-        // Step 2: Create the alluvial diagram using d3-sankey
+        // Create the alluvial diagram using d3-sankey
         var width = 960;
         var height = 600;
 
         var sankey = d3.sankey()
             .nodeWidth(15)
             .nodePadding(10)
-            .size([width, height]);
-
-        sankey
+            .size([width, height])
             .nodes(sankeyData.nodes)
             .links(sankeyData.links)
-            .layout(); // Use .layout() directly on sankey
+            .layout(); // No need to call layout separately
 
         var path = sankey.link();
 
@@ -70,7 +68,7 @@
 
         var node = svg.append("g")
             .selectAll(".node")
-            .data(sankeyData.nodes)
+            .data(sankey.nodes())
             .enter().append("g")
             .attr("class", "node")
             .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
