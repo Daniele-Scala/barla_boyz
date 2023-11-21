@@ -54,7 +54,7 @@
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
+        var root;
         // Load the data
         d3.json("../Data/dataset1.json").then(function (data) {
             console.log(data);  // Log the entire dataset
@@ -73,7 +73,7 @@
                 .size([height, width - 100]);
 
             // Compute the layout
-            tree(d3.hierarchy(customRoot, function (d) { return d.values; }));
+            root=tree(d3.hierarchy(customRoot, function (d) { return d.values; }));
 
             // Add links
             svg.selectAll(".link")
