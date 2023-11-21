@@ -39,6 +39,7 @@
         <h2>Alluvial</h2>
         <div id="sankeyDiagram"></div>
     </div>    
+
     <script>
         // Set the dimensions and margins of the graph
         var margin = {top: 10, right: 10, bottom: 10, left: 10},
@@ -52,19 +53,18 @@
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        // load the data
-        d3.json("../Data/dataset1.json").then(function(data) {
+        // Load the data
+        d3.json("../Data/dataset1.json").then(function (data) {
 
             // Nest the data by state, city, and scientific_name
-            var nestedData = d3.nest()
-                .key(function(d) { return d.state; })
-                .key(function(d) { return d.city; })
-                .key(function(d) { return d.scientific_name; })
-                .entries(data);
+            var nestedData = d3.rollup(data, 
+                v => d3.groups(v, d => d.state, d => d.city, d => d.scientific_name),
+                d => d.state
+            );
 
             // Create a root node for the dendrogram
-            var root = d3.hierarchy({ values: nestedData }, function(d) { return d.values; })
-                .sum(function(d) { return d.values.length; });
+            var root = d3.hierarchy({ values: nestedData }, function (d) { return d[1]; })
+                .sum(function (d) { return d[1].length; });
 
             // Create a cluster layout
             var tree = d3.cluster()
@@ -79,28 +79,26 @@
                 .enter().append("path")
                 .attr("class", "link")
                 .attr("d", d3.linkHorizontal()
-                    .x(function(d) { return d.y; })
-                    .y(function(d) { return d.x; }));
+                    .x(function (d) { return d.y; })
+                    .y(function (d) { return d.x; }));
 
             // Add nodes
             var node = svg.selectAll(".node")
                 .data(root.descendants())
                 .enter().append("g")
-                .attr("class", function(d) { return "node" + (d.children ? " node--internal" : " node--leaf"); })
-                .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+                .attr("class", function (d) { return "node" + (d.children ? " node--internal" : " node--leaf"); })
+                .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; });
 
             node.append("circle")
                 .attr("r", 4)
-                .style("fill", function(d) { return color(d.depth); });
+                .style("fill", function (d) { return color(d.depth); });
 
             node.append("text")
                 .attr("dy", 3)
-                .attr("x", function(d) { return d.children ? -8 : 8; })
-                .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
-                .text(function(d) { return d.data.key; });
+                .attr("x", function (d) { return d.children ? -8 : 8; })
+                .style("text-anchor", function (d) { return d.children ? "end" : "start"; })
+                .text(function (d) { return d.data[0]; });
         });
-
-
     </script>
 
 <footer class="bg-dark text-light text-center p-2">
