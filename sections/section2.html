@@ -38,79 +38,88 @@
     <div class="container text-center flex-grow-1 my-5"> <!-- Aggiunto "flex-grow-1" per far crescere il div e "my-5" per aggiungere spazio sopra e sotto -->
         <h1><strong>Assignment 2: Distributions</strong></h1>
         <h2>Alluvial</h2>
-        <div id="alluvialGraph"></div>
+        <div id="sankeyDiagram"></div>
     </div>    
     <script>
     // Load the JSON data
     d3.json("../Data/dataset1.json").then(function(data) {
-        // Create layers manually
-        var stateData = Array.from(d3.group(data, d => d.state), ([name, values]) => ({ name, values }));
-        var cityData = Array.from(d3.group(data, d => d.city), ([name, values]) => ({ name, values }));
-        var treeData = Array.from(d3.group(data, d => d.scientific_name), ([name, values]) => ({ name, values }));
+   // Create layers manually
+   var stateData = Array.from(d3.group(data, d => d.state), ([name, values]) => ({ name, values }));
+  var cityData = Array.from(d3.group(data, d => d.city), ([name, values]) => ({ name, values }));
+  var treeData = Array.from(d3.group(data, d => d.scientific_name), ([name, values]) => ({ name, values }));
 
-        // Create the alluvial graph
-        var svg = d3.select("#alluvialGraph")
-            .append("svg")
-            .attr("width", 1000)
-            .attr("height", 800);
+  // Combine layers into nodes
+  var nodes = stateData.concat(cityData, treeData);
 
-        // Set node positions
-        var nodes = [
-            { name: "State", layer: 0 },
-            { name: "City", layer: 1 },
-            { name: "Tree species", layer: 2 }
-        ];
+  // Create links between nodes
+  var links = [];
+  cityData.forEach(function(city) {
+    stateData.forEach(function(state) {
+      links.push({
+        source: state.name,
+        target: city.name,
+        value: city.values.length
+      });
+    });
 
-        var nodeWidth = 200;
-        var nodePadding = 40;
+    treeData.forEach(function(tree) {
+      links.push({
+        source: city.name,
+        target: tree.name,
+        value: tree.values.length
+      });
+    });
+  });
 
-        nodes.forEach(function(node, i) {
-            node.x = i * (nodeWidth + nodePadding);
-            node.y = node.layer * 150;
-        });
+  // Create the Sankey diagram
+  var sankey = d3.sankey()
+    .nodeWidth(15)
+    .nodePadding(10)
+    .extent([[0, 0], [800, 400]])
+    .nodes(nodes)
+    .links(links)
+    .layout(32);
 
-        // Draw links
-        var links = [
-            { source: nodes[0], target: nodes[1], value: 1 },
-            { source: nodes[1], target: nodes[2], value: 1 }
-        ];
+  // Create SVG container
+  var svg = d3.select("#sankeyDiagram")
+    .append("svg")
+    .attr("width", 800)
+    .attr("height", 400);
 
-        svg.selectAll("path")
-            .data(links)
-            .enter()
-            .append("path")
-            .attr("d", function(d) {
-            return "M" + d.source.x + "," + d.source.y +
-                    "V" + d.target.y +
-                    "H" + d.target.x;
-            })
-            .attr("fill", "none")
-            .attr("stroke", "#000");
+  // Draw links
+  svg.append("g")
+    .selectAll("path")
+    .data(sankey.links())
+    .join("path")
+    .attr("d", d3.sankeyLinkHorizontal())
+    .attr("stroke", "#000")
+    .attr("stroke-width", d => Math.max(1, d.width))
+    .attr("fill", "none");
 
-        // Draw nodes
-        svg.selectAll("rect")
-            .data(nodes)
-            .enter()
-            .append("rect")
-            .attr("x", function(d) { return d.x - nodeWidth / 2; })
-            .attr("y", function(d) { return d.y - 10; })
-            .attr("width", nodeWidth)
-            .attr("height", 20)
-            .attr("fill", "#69b3a2");
+  // Draw nodes
+  svg.append("g")
+    .selectAll("rect")
+    .data(sankey.nodes())
+    .join("rect")
+    .attr("x", d => d.x0)
+    .attr("y", d => d.y0)
+    .attr("height", d => d.y1 - d.y0)
+    .attr("width", d => d.x1 - d.x0)
+    .attr("fill", "#69b3a2");
 
-        // Add labels to nodes
-        svg.selectAll("text")
-            .data(nodes)
-            .enter()
-            .append("text")
-            .attr("x", function(d) { return d.x; })
-            .attr("y", function(d) { return d.y; })
-            .attr("dy", "0.35em")
-            .attr("text-anchor", "middle")
-            .text(function(d) { return d.name; })
-            .attr("font-size", 12);
+  // Add labels to nodes
+  svg.append("g")
+    .selectAll("text")
+    .data(sankey.nodes())
+    .join("text")
+    .attr("x", d => (d.x0 < 400) ? d.x1 + 6 : d.x0 - 6)
+    .attr("y", d => (d.y1 + d.y0) / 2)
+    .attr("dy", "0.35em")
+    .attr("text-anchor", d => (d.x0 < 400) ? "start" : "end")
+    .text(d => d.name)
+    .attr("font-size", 12);
 
-        });
+});
 
 </script>
 
