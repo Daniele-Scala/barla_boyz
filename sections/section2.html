@@ -34,6 +34,48 @@
     </nav>
 
 
+    <div id="alluvialGraph"></div>
+    
+    <script>
+    // Load the JSON data
+    d3.json('data/dataset.json').then(function(data) {
+        // Process the data to create layers
+        var stateData = d3.nest()
+        .key(d => d.state)
+        .entries(data);
+    
+        var cityData = d3.nest()
+        .key(d => d.city)
+        .entries(data);
+    
+        var treeData = d3.nest()
+        .key(d => d.scientific_name)
+        .entries(data);
+    
+        // Create the alluvial graph
+        var alluvial = d3.alluvial()
+        .nodeWidth(15)
+        .nodePadding(10)
+        .size([800, 400]);
+    
+        d3.select("#alluvialGraph")
+        .datum({
+            nodes: [
+            { name: "State" },
+            { name: "City" },
+            { name: "Tree species" }
+            ],
+            layers: [
+            { name: "State", values: stateData },
+            { name: "City", values: cityData },
+            { name: "Tree species", values: treeData }
+            ]
+        })
+        .call(alluvial);
+    });
+    
+    </script>
+    
     <footer class="bg-dark text-light text-center p-2">
         <p>&copy; 2023 Barla Boyz. All rights reserved. <a href="../others/privacy.html" class="text-light">Privacy policy</a></p>
     </footer>
