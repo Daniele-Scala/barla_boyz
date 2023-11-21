@@ -20,20 +20,34 @@
             links: []
         };
 
+        // Helper function to find or add a node to the nodes array
+        function findNodeByName(name) {
+            var node = sankeyData.nodes.find(function (n) {
+                return n.name === name;
+            });
+
+            if (!node) {
+                node = { name: name };
+                sankeyData.nodes.push(node);
+            }
+
+            return node;
+        }
+
         data.forEach(function (d) {
-            sankeyData.nodes.push({ name: d.state });
-            sankeyData.nodes.push({ name: d.city });
-            sankeyData.nodes.push({ name: d.scientific_name });
+            var stateNode = findNodeByName(d.state);
+            var cityNode = findNodeByName(d.city);
+            var speciesNode = findNodeByName(d.scientific_name);
 
             sankeyData.links.push({
-                source: d.state,
-                target: d.city,
+                source: stateNode,
+                target: cityNode,
                 value: d.count
             });
 
             sankeyData.links.push({
-                source: d.city,
-                target: d.scientific_name,
+                source: cityNode,
+                target: speciesNode,
                 value: d.count
             });
         });
@@ -41,9 +55,6 @@
         // Create the alluvial diagram using d3-sankey
         var width = 960;
         var height = 600;
-
-        console.log(sankeyData.nodes);
-
 
         var sankey = d3.sankey()
             .nodeWidth(15)
