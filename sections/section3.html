@@ -46,6 +46,10 @@
         // Merge the arrays into a single nodes array
         sankeyData.nodes = stateNodes.concat(cityNodes, speciesNodes);
 
+        // Print nodes and links for debugging
+        console.log("Nodes:", sankeyData.nodes);
+        console.log("Links:", sankeyData.links);
+
         // Create the alluvial diagram using d3-sankey
         var width = 960;
         var height = 600;
@@ -57,11 +61,16 @@
             .nodes(sankeyData.nodes)
             .links(sankeyData.links);
 
+        console.log("Sankey layout:", sankey);
+
+        // Rest of your code...
+
+
         sankey(sankeyData); // This line creates the layout
 
         var path = d3.linkHorizontal();
 
-        
+
         var svg = d3.select("#alluvialDiagram")
             .append("svg")
             .attr("width", width)
