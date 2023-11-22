@@ -61,22 +61,28 @@ d3.json("../Data/dataset1.json").then(function (data) {
     d3.group(sankeydata.nodes, (d) => d.name),
     ([value]) => value
   );
+    
+    // loop through each link replacing the text with its index from node
+    sankeydata.links.forEach(function (d, i) {
+    const sourceIndex = sankeydata.nodes.findIndex(node => node.name === d.source);
+    const targetIndex = sankeydata.nodes.findIndex(node => node.name === d.target);
 
-  // loop through each link replacing the text with its index from node
-  sankeydata.links.forEach(function (d, i) {
-    sankeydata.links[i].source = sankeydata.nodes.indexOf(
-      sankeydata.links[i].source
-    );
-    sankeydata.links[i].target = sankeydata.nodes.indexOf(
-      sankeydata.links[i].target
-    );
-  });
+    if (sourceIndex !== -1 && targetIndex !== -1) {
+        sankeydata.links[i].source = sourceIndex;
+        sankeydata.links[i].target = targetIndex;
+    } else {
+        console.error('Invalid source or target:', d.source, d.target);
+    }
+    });
 
-  // now loop through each nodes to make nodes an array of objects
-  // rather than an array of strings
-  sankeydata.nodes.forEach(function (d, i) {
+    // now loop through each nodes to make nodes an array of objects
+    // rather than an array of strings
+    sankeydata.nodes.forEach(function (d, i) {
     sankeydata.nodes[i] = { name: d };
-  });
+    });
+
+    console.log('Sankey Data:', sankeydata); // Log the processed data for debugging
+
 
   graph = sankey(sankeydata);
 
